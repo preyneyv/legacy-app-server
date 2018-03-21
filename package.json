@@ -1,0 +1,20 @@
+{
+  "name": "app-server",
+  "version": "1.0.0",
+  "main": "index.js",
+  "scripts": {
+    "start": "nodemon --ignore views/ --ignore static/ index.js"
+  },
+  "author": "Pranav Nutalapati",
+  "license": "MIT",
+  "private": true,
+  "dependencies": {
+    "client-sessions": "^0.8.0",
+    "express": "^4.16.3",
+    "express-handlebars": "^3.0.0",
+    "socket.io": "^2.0.4"
+  },
+  "devDependencies": {
+    "nodemon": "^1.17.2"
+  }
+}

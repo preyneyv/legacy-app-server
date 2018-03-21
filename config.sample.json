@@ -1,0 +1,10 @@
+{
+	"port": 80,
+	"appDirectory": "apps/",
+	"sessionSecret": "laskdjfoi2390j289oj;o09=1fs",
+
+	"admin": {
+		"username": "admin",
+		"password": "LegacyAppServer"
+	}
+}

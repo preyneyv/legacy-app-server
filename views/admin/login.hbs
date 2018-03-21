@@ -1,0 +1,60 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<title>Admin | App Server</title>
+	<script src="https://cdnjs.cloudflare.com/ajax/libs/axios/0.18.0/axios.min.js" integrity="sha256-mpnrJ5DpEZZkwkE1ZgkEQQJW/46CSEh/STrZKOB/qoM=" crossorigin="anonymous"></script>
+	<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.3.1/jquery.slim.min.js" integrity="sha256-3edrmyuQ0w65f8gfBsqowzjJe2iM6n0nKciPUp8y+7E=" crossorigin="anonymous"></script>
+
+	<link href="https://fonts.googleapis.com/css?family=Lato:300,400,700" rel="stylesheet">
+	<style type="text/css">
+		form {
+			position: absolute;
+			top: 50%;
+			left: 50%;
+			transform: translateY(-50%) translateX(-50%);
+		}
+		form input {
+			font: Lato, sans-serif;
+			outline: none;
+			display: block;
+			width: 100%;
+			box-sizing: border-box;
+			border-radius: 0;
+			border: 1px solid rgba(0,0,0,0.15);
+			margin-bottom: 16px;
+			padding: 12px;
+			font-size: 24px;
+			font-weight: 300;
+			letter-spacing: 2px;
+			background: transparent;
+		}
+		form input[type=submit] {
+			cursor: pointer;
+		}
+	</style>
+</head>
+<body>
+	<form>
+		<input autofocus required type="text" id="username" placeholder="Username">
+		<input required type="password" id="password" placeholder="Password">
+		<input type="submit" value="Login">
+	</form>
+</body>
+<script type="text/javascript">
+	$("form").on('submit', e => {
+		e.preventDefault()
+		e.stopPropagation()
+		const username = $("#username").val()
+		const password = $("#password").val()
+		axios.post('/admin/login', { username, password })
+		.then(response => response.data)
+		.then(data => {
+			if (data.success) {
+				window.location.reload()
+			} else {
+				alert('Incorrect username or password.')
+			}
+		})
+	})
+</script>
+</html>
