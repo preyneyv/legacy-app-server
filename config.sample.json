@@ -6,5 +6,7 @@
 	"admin": {
 		"username": "admin",
 		"password": "LegacyAppServer"
-	}
+	},
+
+	"autoInstallPackages": true
 }

@@ -5,7 +5,7 @@ const express = require("express")
 const bodyParser = require('body-parser')
 const fs = require("fs")
 const path = require("path")
-const exec = require('child_process').exec;
+let exec = require('child_process').exec;
 
 const appServer = express()
 const server = require("http").createServer(appServer)
@@ -73,6 +73,9 @@ server.listen(port, console.log(`*App server listening on port ${port}!*\n`))
 
 // Mount each app
 const loggedIn = (req, res, next) => req.serverSession.loggedIn ? next() : res.redirect('/admin')
+if (!conf.autoInstallPackages) {
+	exec = (a, b, cb) => cb(null, null, null)
+}
 apps.forEach(appDetails => {
 	// ensure packages are installed
 	console.log(`Checking packages for ${appDetails.name.title}`)
