@@ -29,7 +29,7 @@ global.apps = fs.readdirSync(conf.appDirectory)
 				camelCased: package.name.replace(/-([a-z])/g, g => g[1].toUpperCase())
 			},
 			description: package.description,
-			url: "/" + package.name,
+			url: "/" + (package.url || package.name),
 			author: package.author,
 			disabled: fs.existsSync(`${appPath}/disable`),
 			mounted: false
@@ -83,24 +83,24 @@ apps.forEach(appDetails => {
 		cwd: appDetails.path
 	}, (error, stdout, stderr) => {
 		// init app
-		const [subApp, subAppAdmin, initFunc] = require(appDetails.path)
-		subApp.use(clientSessions({
+		let client = require(appDetails.path);
+		let admin = require(path.join(appDetails.path, 'admin/index.js'));
+		client.app.use(clientSessions({
 			cookieName: appDetails.name.package,
 			secret: conf.sessionSecret
 		}))
-		subApp.use((req, res, next) => {
+		client.app.use((req, res, next) => {
 			res.file = file => res.sendFile(path.resolve(appDetails.path, file))
 			req.session = req[appDetails.name.package]
 			next()
 		})
-		subAppAdmin.use((req, res, next) => {
+		admin.app.use((req, res, next) => {
 			res.file = file => res.sendFile(path.resolve(appDetails.path, 'admin', file))
 			next()
 		})
-
-		global[appDetails.name.camelCased] = {}
-		initFunc()
-		appServer.use("/admin" + appDetails.url, loggedIn, subAppAdmin)
+		client.init()
+		admin.init()
+		appServer.use("/admin" + appDetails.url, loggedIn, admin.app)
 		appServer.use(appDetails.url, (req, res, next) => {
 			const app = apps.filter(a => a.url == appDetails.url)[0]
 			if (app.disabled) {
@@ -108,7 +108,7 @@ apps.forEach(appDetails => {
 			} else {
 				next()
 			}
-		}, subApp)
+		}, client.app)
 		console.log(`${appDetails.name.title} mounted!`)
 		appDetails.mounted = true
 	})
