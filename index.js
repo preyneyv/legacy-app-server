@@ -55,6 +55,27 @@ appServer.use((req, res, next) => {
 	req.get = req.query
 	next()
 })
+const slashAdder = (req, res, next) => {
+	if (req.method != "GET") return next();
+	if (req.url.split('?')[0].endsWith('/')) {
+		return next()
+	} else {
+		if (path.extname(req.url) == '') {
+			// IT'S A ROUTE
+			let qIndex = req.url.indexOf('?')
+			let newUrl
+			if (qIndex > -1)
+				newUrl = req.url.split('?')[0] + '/?' + req.url.split('?')[1]
+			else
+				newUrl = req.url + '/'
+			res.redirect(newUrl)
+		} else {
+			// IT'S A FILE
+			return next()
+		}
+	}
+}
+appServer.use(slashAdder)
 
 appServer.use(clientSessions({
 	cookieName: 'serverSession',
@@ -76,6 +97,7 @@ const loggedIn = (req, res, next) => req.serverSession.loggedIn ? next() : res.r
 if (!conf.autoInstallPackages) {
 	exec = (a, b, cb) => cb(null, null, null)
 }
+
 apps.forEach(appDetails => {
 	// ensure packages are installed
 	console.log(`Checking packages for ${appDetails.name.title}`)
