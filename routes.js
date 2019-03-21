@@ -10,7 +10,11 @@ global.checkEnabled = (appUrl) => (req, res, next) => {
 
 module.exports = app => {
 	app.get('/', (req, res) => res.render("appListing", { apps }))
-
+	app.get('/test', (req, res, next) => {
+		// 1st
+	}, (req, res, next) => {
+		// 2nd
+	})
 	app.get('/admin', (req, res) => {
 		if (req.serverSession.loggedIn) {
 			res.render('admin/dashboard', { apps })
