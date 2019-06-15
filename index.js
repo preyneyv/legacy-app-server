@@ -1,3 +1,4 @@
+#!/usr/bin/env nodejs
 const conf = require("./config.json")
 
 const clientSessions = require("client-sessions")
